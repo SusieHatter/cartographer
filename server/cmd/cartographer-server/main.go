@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/rs/cors"
 	"susie.mx/cartographer/internal/db"
 )
