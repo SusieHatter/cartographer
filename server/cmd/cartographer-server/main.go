@@ -41,7 +41,12 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 			switch req.Method {
 			case http.MethodGet:
 				mapImage := db.GetMapImage(id)
-				w.Write([]byte(mapImage.DataUrl))
+				encoder := json.NewEncoder(w)
+				err := encoder.Encode(mapImage)
+				if err != nil {
+					log.Println(err)
+					return
+				}
 			case http.MethodPut:
 				mapDataUrl, err := ioutil.ReadAll(req.Body)
 				if err != nil {

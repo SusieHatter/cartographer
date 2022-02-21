@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 
 const loadCanvas = async (ctx: CanvasRenderingContext2D, serverUrl: string) => {
-  const src = await fetch(serverUrl).then((res) => res.text());
+  const mapImage = await fetch(serverUrl).then((res) => res.json());
   const img = new Image();
   img.onload = function () {
     ctx.drawImage(img, 0, 0);
   };
-  img.src = src;
+  img.src = mapImage.dataUrl;
 };
 
 const postCanvas = async (ctx: CanvasRenderingContext2D, serverUrl: string) => {
