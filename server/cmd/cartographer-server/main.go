@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -13,9 +14,14 @@ import (
 	"susie.mx/cartographer/internal/db"
 )
 
+const noId = -1
+
 func getId(url string) (int, error) {
 	tokens := strings.Split(url, "/")
 	idStr := tokens[2]
+	if idStr == "" {
+		return noId, nil
+	}
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		return 0, fmt.Errorf("id is not a string: %s", err)
@@ -31,17 +37,30 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 			log.Println(err)
 			return
 		}
-		switch req.Method {
-		case "GET":
-			mapImage := db.GetMapImage(id)
-			w.Write(mapImage.Bytes)
-		case "POST":
-			mapBytes, err := ioutil.ReadAll(req.Body)
-			if err != nil {
-				log.Println(err)
-				return
+		if id != noId {
+			switch req.Method {
+			case "GET":
+				mapImage := db.GetMapImage(id)
+				w.Write([]byte(mapImage.DataUrl))
+			case "POST":
+				mapDataUrl, err := ioutil.ReadAll(req.Body)
+				if err != nil {
+					log.Println(err)
+					return
+				}
+				db.UpdateMapImage(id, string(mapDataUrl))
 			}
-			db.UpdateMapImage(id, mapBytes)
+		} else {
+			switch req.Method {
+			case "GET":
+				mapImages := db.GetMapImages()
+				encoder := json.NewEncoder(w)
+				err := encoder.Encode(mapImages)
+				if err != nil {
+					log.Println(err)
+					return
+				}
+			}
 		}
 	}
 }

@@ -3,29 +3,48 @@ package db
 import "log"
 
 type MapImage struct {
-	Id    int
-	Bytes []byte
+	Id      int    `json:"id"`
+	DataUrl string `json:"dataUrl"`
 }
 
 func (db DB) GetMapImage(id int) MapImage {
-	var bytes []byte
-	err := db.QueryRow("SELECT (bytes) FROM maps WHERE id = $1", id).Scan(&bytes)
+	var dataUrl string
+	err := db.QueryRow("SELECT (dataurl) FROM maps WHERE id = $1", id).Scan(&dataUrl)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	return MapImage{
-		Id:    id,
-		Bytes: bytes,
+		Id:      id,
+		DataUrl: dataUrl,
 	}
 }
 
-func (db DB) UpdateMapImage(id int, newBytes []byte) MapImage {
-	_, err := db.Exec("UPDATE maps SET bytes = $1 WHERE id = $2", newBytes, id)
+func (db DB) GetMapImages() []MapImage {
+	rows, err := db.Query("SELECT * FROM maps")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	mapImages := []MapImage{}
+	for rows.Next() {
+		var id int
+		var dataUrl string
+		err := rows.Scan(&id, &dataUrl)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		mapImage := MapImage{Id: id, DataUrl: dataUrl}
+		mapImages = append(mapImages, mapImage)
+	}
+	return mapImages
+}
+
+func (db DB) UpdateMapImage(id int, newDataUrl string) MapImage {
+	_, err := db.Exec("UPDATE maps SET dataurl = $1 WHERE id = $2", newDataUrl, id)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	return MapImage{
-		Id:    id,
-		Bytes: newBytes,
+		Id:      id,
+		DataUrl: newDataUrl,
 	}
 }
