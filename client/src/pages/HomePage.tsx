@@ -21,7 +21,13 @@ const HomePage = () => {
       });
   };
 
-  const onDelete = () => {};
+  const onDelete = (id: number) => {
+    fetch(`http://localhost:8090/maps/${id}`, {
+      method: "delete",
+    }).then(() =>
+      setMapImages(mapImages.filter((mapImage) => mapImage.id !== id))
+    );
+  };
 
   return (
     <div>
@@ -40,7 +46,7 @@ const HomePage = () => {
               alt=""
             />
           </Link>
-          <button onClick={onDelete}>Delete</button>
+          <button onClick={() => onDelete(mapImage.id)}>Delete</button>
         </div>
       ))}
     </div>

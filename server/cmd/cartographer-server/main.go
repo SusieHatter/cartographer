@@ -49,6 +49,8 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 					return
 				}
 				db.UpdateMapImage(id, string(mapDataUrl))
+			case http.MethodDelete:
+				db.DeleteMapImage(id)
 			}
 		} else {
 			switch req.Method {

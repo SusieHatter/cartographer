@@ -60,3 +60,10 @@ func (db DB) UpdateMapImage(id int, newDataUrl string) MapImage {
 		DataUrl: newDataUrl,
 	}
 }
+
+func (db DB) DeleteMapImage(id int) {
+	_, err := db.Exec("DELETE FROM maps WHERE id = $1", id)
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
