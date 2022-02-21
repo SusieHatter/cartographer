@@ -12,7 +12,7 @@ const loadCanvas = async (ctx: CanvasRenderingContext2D, serverUrl: string) => {
 const postCanvas = async (ctx: CanvasRenderingContext2D, serverUrl: string) => {
   const imageData = ctx.canvas.toDataURL();
   fetch(serverUrl, {
-    method: "post",
+    method: "put",
     body: imageData,
   });
 };

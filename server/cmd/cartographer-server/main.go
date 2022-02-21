@@ -39,10 +39,10 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 		}
 		if id != noId {
 			switch req.Method {
-			case "GET":
+			case http.MethodGet:
 				mapImage := db.GetMapImage(id)
 				w.Write([]byte(mapImage.DataUrl))
-			case "POST":
+			case http.MethodPut:
 				mapDataUrl, err := ioutil.ReadAll(req.Body)
 				if err != nil {
 					log.Println(err)
@@ -52,7 +52,7 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 			}
 		} else {
 			switch req.Method {
-			case "GET":
+			case http.MethodGet:
 				mapImages := db.GetMapImages()
 				encoder := json.NewEncoder(w)
 				err := encoder.Encode(mapImages)
@@ -60,7 +60,7 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 					log.Println(err)
 					return
 				}
-			case "POST":
+			case http.MethodPost:
 				newMapImage := db.CreateMapImage()
 				encoder := json.NewEncoder(w)
 				err := encoder.Encode(newMapImage)
@@ -77,6 +77,11 @@ func main() {
 	db := db.Connect(db.LoadFromEnv())
 	mux := http.NewServeMux()
 	mux.HandleFunc("/maps/", mapsHandler(db))
-	handler := cors.Default().Handler(mux)
+
+	c := cors.New(cors.Options{
+		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
+	})
+
+	handler := c.Handler(mux)
 	http.ListenAndServe(":8090", handler)
 }
