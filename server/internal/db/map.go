@@ -35,6 +35,7 @@ func (db DB) GetMapImages() []MapImage {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer rows.Close()
 	mapImages := []MapImage{}
 	for rows.Next() {
 		var id int
