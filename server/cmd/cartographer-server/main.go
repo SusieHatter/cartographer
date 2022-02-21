@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -12,6 +11,7 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/rs/cors"
 	"susie.mx/cartographer/internal/db"
+	"susie.mx/cartographer/internal/models"
 )
 
 const noId = -1
@@ -48,12 +48,14 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 					return
 				}
 			case http.MethodPut:
-				mapDataUrl, err := ioutil.ReadAll(req.Body)
+				var updatedMapImage models.MapImage
+				decoder := json.NewDecoder(req.Body)
+				err := decoder.Decode(&updatedMapImage)
 				if err != nil {
 					log.Println(err)
 					return
 				}
-				updatedMapImage := db.UpdateMapImage(id, string(mapDataUrl))
+				updatedMapImage = db.UpdateMapImage(id, updatedMapImage)
 				encoder := json.NewEncoder(w)
 				err = encoder.Encode(updatedMapImage)
 				if err != nil {

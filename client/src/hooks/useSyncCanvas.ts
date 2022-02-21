@@ -17,8 +17,8 @@ const postCanvas = async (
   ctx: CanvasRenderingContext2D,
   mapImageId: number
 ) => {
-  const imageData = ctx.canvas.toDataURL();
-  await updateMapImage(mapImageId, imageData);
+  const dataUrl = ctx.canvas.toDataURL();
+  await updateMapImage(mapImageId, { dataUrl });
 };
 
 type Milliseconds = number;
