@@ -53,7 +53,13 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 					log.Println(err)
 					return
 				}
-				db.UpdateMapImage(id, string(mapDataUrl))
+				updatedMapImage := db.UpdateMapImage(id, string(mapDataUrl))
+				encoder := json.NewEncoder(w)
+				err = encoder.Encode(updatedMapImage)
+				if err != nil {
+					log.Println(err)
+					return
+				}
 			case http.MethodDelete:
 				db.DeleteMapImage(id)
 			}

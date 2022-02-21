@@ -1,7 +1,11 @@
 import { useEffect } from "react";
+import { getMapImage, updateMapImage } from "../api/mapImages";
 
-const loadCanvas = async (ctx: CanvasRenderingContext2D, serverUrl: string) => {
-  const mapImage = await fetch(serverUrl).then((res) => res.json());
+const loadCanvas = async (
+  ctx: CanvasRenderingContext2D,
+  mapImageId: number
+) => {
+  const mapImage = await getMapImage(mapImageId);
   const img = new Image();
   img.onload = function () {
     ctx.drawImage(img, 0, 0);
@@ -9,19 +13,19 @@ const loadCanvas = async (ctx: CanvasRenderingContext2D, serverUrl: string) => {
   img.src = mapImage.dataUrl;
 };
 
-const postCanvas = async (ctx: CanvasRenderingContext2D, serverUrl: string) => {
+const postCanvas = async (
+  ctx: CanvasRenderingContext2D,
+  mapImageId: number
+) => {
   const imageData = ctx.canvas.toDataURL();
-  fetch(serverUrl, {
-    method: "put",
-    body: imageData,
-  });
+  await updateMapImage(mapImageId, imageData);
 };
 
 type Milliseconds = number;
 
 const useSyncCanvas = (
   ctx: CanvasRenderingContext2D | undefined | null,
-  serverUrl: string,
+  mapImageId: number,
   postInterval: Milliseconds
 ) => {
   useEffect(() => {
@@ -29,15 +33,15 @@ const useSyncCanvas = (
       return;
     }
     let timer: NodeJS.Timer;
-    loadCanvas(ctx, serverUrl).then(() => {
+    loadCanvas(ctx, mapImageId).then(() => {
       timer = setInterval(() => {
-        postCanvas(ctx, serverUrl);
+        postCanvas(ctx, mapImageId);
       }, postInterval);
     });
     return () => {
       clearInterval(timer);
     };
-  }, [ctx, serverUrl, postInterval]);
+  }, [ctx, mapImageId, postInterval]);
 };
 
 export default useSyncCanvas;

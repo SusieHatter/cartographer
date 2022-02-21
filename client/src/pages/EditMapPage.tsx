@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { drawLine } from "../draw";
 import useCanvas from "../hooks/useCanvas";
 import useSyncCanvas from "../hooks/useSyncCanvas";
@@ -8,9 +8,21 @@ const WIDTH = 3000;
 const HEIGHT = 1500;
 
 function EditMapPage() {
-  const { id } = useParams();
+  const { id: idStr } = useParams();
+  const navigate = useNavigate();
+
+  if (!idStr) {
+    throw Error("EditMapPage requires an id in the url params");
+  }
+  const id = parseInt(idStr);
+  useEffect(() => {
+    if (Number.isNaN(id)) {
+      navigate("/", { replace: true });
+    }
+  }, [id, navigate]);
+
   const { ctx, ref } = useCanvas(WIDTH, HEIGHT);
-  useSyncCanvas(ctx, `http://localhost:8090/maps/${id}`, 5000);
+  useSyncCanvas(ctx, id, 5000);
 
   const [penDown, setPenDown] = useState(false);
   const [[x, y], setPenPosition] = useState([0, 0]);

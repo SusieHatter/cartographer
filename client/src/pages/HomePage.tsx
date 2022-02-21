@@ -1,30 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { createMapImage, deleteMapImage, getMapImages } from "../api/mapImages";
 import { MapImage } from "../models";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [mapImages, setMapImages] = useState<MapImage[]>([]);
+
   useEffect(() => {
-    fetch("http://localhost:8090/maps/")
-      .then((res) => res.json())
-      .then((mapImages) => setMapImages(mapImages));
+    getMapImages().then((mapImages) => setMapImages(mapImages));
   }, []);
 
   const onCreate = () => {
-    fetch("http://localhost:8090/maps/", {
-      method: "post",
-    })
-      .then((res) => res.json())
-      .then((newMapImage) => {
-        navigate(`/maps/${newMapImage.id}`);
-      });
+    createMapImage().then((newMapImage) => {
+      navigate(`/maps/${newMapImage.id}`);
+    });
   };
 
   const onDelete = (id: number) => {
-    fetch(`http://localhost:8090/maps/${id}`, {
-      method: "delete",
-    }).then(() =>
+    deleteMapImage(id).then(() =>
       setMapImages(mapImages.filter((mapImage) => mapImage.id !== id))
     );
   };
