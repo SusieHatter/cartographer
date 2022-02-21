@@ -7,6 +7,17 @@ type MapImage struct {
 	DataUrl string `json:"dataUrl"`
 }
 
+func (db DB) CreateMapImage() MapImage {
+	var id int
+	err := db.QueryRow("INSERT INTO maps (dataurl) VALUES('') RETURNING id").Scan(&id)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return MapImage{
+		Id: id,
+	}
+}
+
 func (db DB) GetMapImage(id int) MapImage {
 	var dataUrl string
 	err := db.QueryRow("SELECT (dataurl) FROM maps WHERE id = $1", id).Scan(&dataUrl)

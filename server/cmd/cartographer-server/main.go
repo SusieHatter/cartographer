@@ -60,6 +60,14 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 					log.Println(err)
 					return
 				}
+			case "POST":
+				newMapImage := db.CreateMapImage()
+				encoder := json.NewEncoder(w)
+				err := encoder.Encode(newMapImage)
+				if err != nil {
+					log.Println(err)
+					return
+				}
 			}
 		}
 	}
