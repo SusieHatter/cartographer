@@ -31,7 +31,7 @@ func (db DB) GetMapImage(id int) MapImage {
 }
 
 func (db DB) GetMapImages() []MapImage {
-	rows, err := db.Query("SELECT * FROM maps")
+	rows, err := db.Query("SELECT * FROM maps ORDER BY id DESC")
 	if err != nil {
 		log.Fatalln(err)
 	}
