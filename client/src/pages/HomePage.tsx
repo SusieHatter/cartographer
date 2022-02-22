@@ -27,14 +27,19 @@ const HomePage = () => {
     <div>
       <h2>Hi</h2>
       <button onClick={onCreate}>Create</button>
-      {mapImages.map((mapImage) => (
-        <div key={mapImage.id}>
-          <Link to={`/maps/${mapImage.id}`}>
-            <img src={mapImage.dataUrl} alt="" />
-          </Link>
-          <button onClick={() => onDelete(mapImage.id)}>Delete</button>
-        </div>
-      ))}
+      <div className="flex flex-wrap">
+        {mapImages.map((mapImage) => (
+          <div
+            key={mapImage.id}
+            className="basis-full  sm:basis-1/2 md:basis-1/4 p-2"
+          >
+            <Link to={`/maps/${mapImage.id}`}>
+              <img src={mapImage.dataUrl} alt="" className="border" />
+            </Link>
+            <button onClick={() => onDelete(mapImage.id)}>Delete</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
