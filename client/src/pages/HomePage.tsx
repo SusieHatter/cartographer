@@ -30,15 +30,7 @@ const HomePage = () => {
       {mapImages.map((mapImage) => (
         <div key={mapImage.id}>
           <Link to={`/maps/${mapImage.id}`}>
-            <img
-              style={{
-                width: "500px",
-                height: "250px",
-                border: "1px solid black",
-              }}
-              src={mapImage.dataUrl}
-              alt=""
-            />
+            <img src={mapImage.dataUrl} alt="" />
           </Link>
           <button onClick={() => onDelete(mapImage.id)}>Delete</button>
         </div>

@@ -46,7 +46,7 @@ function EditMapPage() {
   };
 
   return (
-    <div style={{ width: "100%", height: "100vh" }}>
+    <div>
       <canvas
         ref={ref}
         onMouseDown={onMouseDown}
