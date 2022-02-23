@@ -26,8 +26,8 @@ const HomePage = () => {
   };
 
   return (
-    <div className="bg-beige h-100 flex-col p-6 flex-1">
-      <div className="flex justify-between py-4">
+    <div className="bg-beige h-100 flex-col px-6 py-3 flex-1">
+      <div className="flex justify-between py-3">
         <h2 className="font-sans text-2xl">Map Collection</h2>
         <ConfirmButton onClick={onCreate}>Create</ConfirmButton>
       </div>
