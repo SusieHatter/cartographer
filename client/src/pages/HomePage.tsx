@@ -26,7 +26,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="bg-beige h-screen w-screen p-6">
+    <div className="bg-beige h-100 flex-col p-6 flex-1">
       <h2 className="font-sans text-2xl">Map Collection</h2>
       <ConfirmButton onClick={onCreate}>Create</ConfirmButton>
       <div className="flex flex-wrap">
@@ -42,7 +42,11 @@ const HomePage = () => {
               ×
             </CancelButton>
             <Link to={`/maps/${mapImage.id}`}>
-              <img src={mapImage.dataUrl} alt="" className="border bg-white" />
+              <img
+                src={mapImage.dataUrl}
+                alt=""
+                className="border bg-[white]"
+              />
             </Link>
           </div>
         ))}
