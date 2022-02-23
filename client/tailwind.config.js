@@ -16,6 +16,7 @@ module.exports = {
     fontFamily: {
       sans: ["Marcellus SC"],
       serif: ["Lora"],
+      ui: ["Poppins"],
     },
     extend: {},
   },

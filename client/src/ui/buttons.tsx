@@ -14,7 +14,7 @@ export const ConfirmButton: React.FC<ConfirmButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      className="py-1 px-2 bg-green text-white font-serif rounded-md shadow-md hover:bg-dark-green active:bg-light-green focus:outline-none"
+      className="py-1 px-5 bg-green font-medium text-white font-ui rounded-md shadow-md hover:bg-dark-green active:bg-light-green focus:outline-none"
     >
       {children}
     </button>
@@ -31,7 +31,7 @@ export const CancelButton: React.FC<CancelButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`py-none px-2 bg-red text-white font-serif rounded-md hover:bg-dark-red active:bg-light-red focus:outline-none ${
+      className={`py-none px-2 bg-red text-white font-medium font-ui rounded-md hover:bg-dark-red active:bg-light-red focus:outline-none ${
         className ?? ""
       }`}
     >
