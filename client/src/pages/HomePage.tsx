@@ -27,13 +27,15 @@ const HomePage = () => {
 
   return (
     <div className="bg-beige h-100 flex-col p-6 flex-1">
-      <h2 className="font-sans text-2xl">Map Collection</h2>
-      <ConfirmButton onClick={onCreate}>Create</ConfirmButton>
-      <div className="flex flex-wrap">
+      <div className="flex justify-between py-4">
+        <h2 className="font-sans text-2xl">Map Collection</h2>
+        <ConfirmButton onClick={onCreate}>Create</ConfirmButton>
+      </div>
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {mapImages.map((mapImage) => (
           <div
             key={mapImage.id}
-            className="group basis-full sm:basis-1/2 md:basis-1/4 p-2 relative"
+            className="group bg-brown font-serif shadow-md rounded-t-lg p-2 relative"
           >
             <CancelButton
               onClick={() => onDelete(mapImage.id)}
@@ -48,6 +50,10 @@ const HomePage = () => {
                 className="border bg-[white]"
               />
             </Link>
+            <h4 className="text-white font-sans text-lg">Map Name</h4>
+            <p className="text-beige font-serif text-xs">
+              Last edited: 10/Feb/2022
+            </p>
           </div>
         ))}
       </div>

@@ -7,10 +7,12 @@ const App = () => {
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/maps/:id" element={<EditMapPage />} />
-      </Routes>
+      <div className="mt-[64px]">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/maps/:id" element={<EditMapPage />} />
+        </Routes>
+      </div>
     </div>
   );
 };
