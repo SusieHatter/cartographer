@@ -35,16 +35,23 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 		id, err := getId(req.URL.String())
 		if err != nil {
 			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		if id != noId {
 			switch req.Method {
 			case http.MethodGet:
-				mapImage := db.GetMapImage(id)
-				encoder := json.NewEncoder(w)
-				err := encoder.Encode(mapImage)
+				mapImage, err := db.GetMapImage(id)
 				if err != nil {
 					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+				encoder := json.NewEncoder(w)
+				err = encoder.Encode(mapImage)
+				if err != nil {
+					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
 					return
 				}
 			case http.MethodPut:
@@ -53,34 +60,58 @@ func mapsHandler(db db.DB) http.HandlerFunc {
 				err := decoder.Decode(&updatedMapImage)
 				if err != nil {
 					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
 					return
 				}
-				updatedMapImage = db.UpdateMapImage(id, updatedMapImage)
+				updatedMapImage, err = db.UpdateMapImage(id, updatedMapImage)
+				if err != nil {
+					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
 				encoder := json.NewEncoder(w)
 				err = encoder.Encode(updatedMapImage)
 				if err != nil {
 					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
 					return
 				}
 			case http.MethodDelete:
-				db.DeleteMapImage(id)
+				err := db.DeleteMapImage(id)
+				if err != nil {
+					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
 			}
 		} else {
 			switch req.Method {
 			case http.MethodGet:
-				mapImages := db.GetMapImages()
-				encoder := json.NewEncoder(w)
-				err := encoder.Encode(mapImages)
+				mapImages, err := db.GetMapImages()
 				if err != nil {
 					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+				encoder := json.NewEncoder(w)
+				err = encoder.Encode(mapImages)
+				if err != nil {
+					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
 					return
 				}
 			case http.MethodPost:
-				newMapImage := db.CreateMapImage()
-				encoder := json.NewEncoder(w)
-				err := encoder.Encode(newMapImage)
+				newMapImage, err := db.CreateMapImage()
 				if err != nil {
 					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
+					return
+				}
+				encoder := json.NewEncoder(w)
+				err = encoder.Encode(newMapImage)
+				if err != nil {
+					log.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
 					return
 				}
 			}
