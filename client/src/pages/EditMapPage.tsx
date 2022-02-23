@@ -46,13 +46,20 @@ function EditMapPage() {
   };
 
   return (
-    <div>
-      <canvas
-        ref={ref}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-      ></canvas>
+    <div className="flex flex-col justify-between h-full w-screen">
+      <div className="bg-green w-100">Name of Map</div>
+      <div className="flex flex-row flex-1 w-screen">
+        <div className="bg-light-red w-20">100</div>
+        <canvas
+          ref={ref}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          className="overflow-scroll"
+        ></canvas>
+        <div className="bg-red w-60">sf</div>
+      </div>
+      <div className="bg-green w-100">Name of Map</div>
     </div>
   );
 }

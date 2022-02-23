@@ -7,7 +7,7 @@ const App = () => {
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
-      <div className="mt-[64px]">
+      <div className="mt-[64px] flex flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/maps/:id" element={<EditMapPage />} />
