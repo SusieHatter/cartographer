@@ -25,6 +25,29 @@ function EditMapPage() {
   const { ctx, ref } = useCanvas(WIDTH, HEIGHT);
   useSyncCanvas(ctx, id, 5000);
 
+  const [spaceDown, setSpaceDown] = useState(false);
+
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === " ") {
+      setSpaceDown(true);
+    }
+  };
+
+  const onKeyUp = (e: KeyboardEvent) => {
+    if (e.key === " ") {
+      setSpaceDown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("keyup", onKeyUp);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("keyup", onKeyUp);
+    };
+  }, []);
+
   const [penDown, setPenDown] = useState(false);
   const [[x, y], setPenPosition] = useState([0, 0]);
 
@@ -34,7 +57,7 @@ function EditMapPage() {
   };
 
   const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!penDown || !ctx) {
+    if (!penDown || !ctx || spaceDown) {
       return;
     }
     const [newX, newY] = [e.clientX, e.clientY];
@@ -52,7 +75,7 @@ function EditMapPage() {
       <div className="flex flex-row flex-1">
         <div className="bg-light-red w-20">100</div>
         <div className="flex flex-1 h-full">
-          <TransformWrapper>
+          <TransformWrapper panning={{ disabled: !spaceDown }}>
             <TransformComponent
               wrapperStyle={{
                 height: "100%",
