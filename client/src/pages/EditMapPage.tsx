@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { drawLine } from "../draw";
 import useCanvas from "../hooks/useCanvas";
 import useSyncCanvas from "../hooks/useSyncCanvas";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 const WIDTH = 3000;
 const HEIGHT = 1500;
@@ -46,20 +47,31 @@ function EditMapPage() {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full w-screen">
-      <div className="bg-green w-100">Name of Map</div>
-      <div className="flex flex-row flex-1 w-screen">
+    <div className="flex flex-col">
+      <div className="bg-green">Name of Map</div>
+      <div className="flex flex-row flex-1">
         <div className="bg-light-red w-20">100</div>
-        <canvas
-          ref={ref}
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
-          className="overflow-scroll"
-        ></canvas>
+        <div className="flex flex-1 h-full">
+          <TransformWrapper>
+            <TransformComponent
+              wrapperStyle={{
+                height: "100%",
+                background: "brown",
+                alignItems: "center",
+              }}
+            >
+              <canvas
+                ref={ref}
+                onMouseDown={onMouseDown}
+                onMouseMove={onMouseMove}
+                onMouseUp={onMouseUp}
+                className="w-full bg-[white]"
+              ></canvas>
+            </TransformComponent>
+          </TransformWrapper>
+        </div>
         <div className="bg-red w-60">sf</div>
       </div>
-      <div className="bg-green w-100">Name of Map</div>
     </div>
   );
 }
