@@ -5,6 +5,8 @@ import useCanvas from "../hooks/useCanvas";
 import useSyncCanvas from "../hooks/useSyncCanvas";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
+type Position = [number, number];
+
 const WIDTH = 3000;
 const HEIGHT = 1500;
 
@@ -24,6 +26,15 @@ function EditMapPage() {
 
   const { ctx, ref } = useCanvas(WIDTH, HEIGHT);
   useSyncCanvas(ctx, id, 5000);
+
+  const scaleClientToCanvasPosition = ([x, y]: Position): Position => {
+    if (!ctx) {
+      return [0, 0];
+    }
+    const bounds = ctx.canvas.getBoundingClientRect();
+    const scale = WIDTH / bounds.width;
+    return [(x - bounds.x) * scale, (y - bounds.y) * scale];
+  };
 
   const [spaceDown, setSpaceDown] = useState(false);
 
@@ -51,23 +62,29 @@ function EditMapPage() {
   const [penDown, setPenDown] = useState(false);
   const [[x, y], setPenPosition] = useState([0, 0]);
 
-  const onMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const putPenDown = (clientPosition: Position) => {
     setPenDown(true);
-    setPenPosition([e.clientX, e.clientY]);
+    const position = scaleClientToCanvasPosition(clientPosition);
+    setPenPosition(position);
   };
 
-  const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const draw = (clientPosition: Position) => {
     if (!penDown || !ctx || spaceDown) {
       return;
     }
-    const [newX, newY] = [e.clientX, e.clientY];
+    const [newX, newY] = scaleClientToCanvasPosition(clientPosition);
     drawLine(ctx, x, y, newX, newY, "black", 1);
     setPenPosition([newX, newY]);
   };
 
-  const onMouseUp = () => {
+  const liftPenUp = () => {
     setPenDown(false);
   };
+
+  const onMouseDown = (e: React.MouseEvent) =>
+    putPenDown([e.clientX, e.clientY]);
+  const onMouseMove = (e: React.MouseEvent) => draw([e.clientX, e.clientY]);
+  const onMouseUp = () => liftPenUp();
 
   return (
     <div className="flex flex-col">
