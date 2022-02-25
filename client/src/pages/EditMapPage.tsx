@@ -86,6 +86,12 @@ function EditMapPage() {
   const onMouseMove = (e: React.MouseEvent) => draw([e.clientX, e.clientY]);
   const onMouseUp = () => liftPenUp();
 
+  const onTouchStart = (e: React.TouchEvent) =>
+    putPenDown([e.touches[0].clientX, e.touches[0].clientY]);
+  const onTouchMove = (e: React.TouchEvent) =>
+    draw([e.touches[0].clientX, e.touches[0].clientY]);
+  const onTouchEnd = () => liftPenUp();
+
   return (
     <div className="flex flex-col">
       <div className="bg-green">Name of Map</div>
@@ -105,6 +111,9 @@ function EditMapPage() {
                 onMouseDown={onMouseDown}
                 onMouseMove={onMouseMove}
                 onMouseUp={onMouseUp}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
                 className="w-full bg-[white]"
               ></canvas>
             </TransformComponent>
