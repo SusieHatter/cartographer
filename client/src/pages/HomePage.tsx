@@ -50,7 +50,7 @@ const HomePage = () => {
                 className="border bg-[white]"
               />
             </Link>
-            <h4 className="text-white font-sans text-lg">Map Name</h4>
+            <h4 className="text-white font-sans text-lg">{mapImage.name}</h4>
             <p className="text-beige font-serif text-xs">
               Last edited: 10/Feb/2022
             </p>

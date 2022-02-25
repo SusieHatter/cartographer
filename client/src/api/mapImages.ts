@@ -10,6 +10,9 @@ const verifyMapImage = (x: any): MapImage => {
   if (x["dataUrl"] === undefined) {
     throw Error("MapImage must have an dataUrl");
   }
+  if (x["name"] === undefined) {
+    throw Error("MapImage must have an name");
+  }
   return x;
 };
 

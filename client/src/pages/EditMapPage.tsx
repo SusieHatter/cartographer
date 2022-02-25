@@ -4,6 +4,7 @@ import { drawLine } from "../draw";
 import useCanvas from "../hooks/useCanvas";
 import useSyncCanvas from "../hooks/useSyncCanvas";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import useMapImage from "../hooks/useMapImage";
 
 type Position = [number, number];
 
@@ -25,7 +26,8 @@ function EditMapPage() {
   }, [id, navigate]);
 
   const { ctx, ref } = useCanvas(WIDTH, HEIGHT);
-  useSyncCanvas(ctx, id, 5000);
+  const mapImage = useMapImage(id);
+  useSyncCanvas(ctx, mapImage, 5000);
 
   const scaleClientToCanvasPosition = ([x, y]: Position): Position => {
     if (!ctx) {
@@ -104,10 +106,14 @@ function EditMapPage() {
     setPenColor(value);
   };
 
+  if (!mapImage) {
+    return <></>;
+  }
+
   return (
     <div className="flex flex-col">
       <div className="bg-green">
-        <h4>Name of Map</h4>
+        <h4>{mapImage.name}</h4>
         <input
           type="number"
           min="1"

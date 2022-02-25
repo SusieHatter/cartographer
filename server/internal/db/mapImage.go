@@ -8,24 +8,30 @@ import (
 
 func (db DB) CreateMapImage() (models.MapImage, error) {
 	var id int
-	err := db.QueryRow("INSERT INTO maps (dataurl) VALUES('') RETURNING id").Scan(&id)
+	dataUrl := ""
+	name := "New Map"
+	err := db.QueryRow("INSERT INTO maps (dataurl, name) VALUES($1, $2) RETURNING id", dataUrl, name).Scan(&id)
 	if err != nil {
 		return models.MapImage{}, fmt.Errorf("creating MapImage failed: %w", err)
 	}
 	return models.MapImage{
-		Id: id,
+		Id:      id,
+		DataUrl: dataUrl,
+		Name:    name,
 	}, nil
 }
 
 func (db DB) GetMapImage(id int) (models.MapImage, error) {
 	var dataUrl string
-	err := db.QueryRow("SELECT (dataurl) FROM maps WHERE id = $1", id).Scan(&dataUrl)
+	var name string
+	err := db.QueryRow("SELECT dataurl, name FROM maps WHERE id = $1", id).Scan(&dataUrl, &name)
 	if err != nil {
 		return models.MapImage{}, fmt.Errorf("getting MapImage(%d) failed: %w", id, err)
 	}
 	return models.MapImage{
 		Id:      id,
 		DataUrl: dataUrl,
+		Name:    name,
 	}, nil
 }
 
@@ -39,11 +45,12 @@ func (db DB) GetMapImages() ([]models.MapImage, error) {
 	for rows.Next() {
 		var id int
 		var dataUrl string
-		err := rows.Scan(&id, &dataUrl)
+		var name string
+		err := rows.Scan(&id, &dataUrl, &name)
 		if err != nil {
 			return nil, fmt.Errorf("scanning MapImage row failed: %w", err)
 		}
-		mapImage := models.MapImage{Id: id, DataUrl: dataUrl}
+		mapImage := models.MapImage{Id: id, DataUrl: dataUrl, Name: name}
 		mapImages = append(mapImages, mapImage)
 	}
 	return mapImages, nil
@@ -57,6 +64,11 @@ func (db DB) UpdateMapImage(id int, updatedMapImage models.MapImage) (models.Map
 		numArgs++
 		queryString += fmt.Sprintf("dataurl = $%d ", numArgs)
 		queryArgs = append(queryArgs, updatedMapImage.DataUrl)
+	}
+	if updatedMapImage.Name != "" {
+		numArgs++
+		queryString += fmt.Sprintf("name = $%d ", numArgs)
+		queryArgs = append(queryArgs, updatedMapImage.Name)
 	}
 	queryString += fmt.Sprintf("WHERE id = $%d", numArgs+1)
 	queryArgs = append(queryArgs, id)
