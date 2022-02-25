@@ -61,6 +61,8 @@ function EditMapPage() {
 
   const [penDown, setPenDown] = useState(false);
   const [[x, y], setPenPosition] = useState([0, 0]);
+  const [penSize, setPenSize] = useState(1);
+  const [penColor, setPenColor] = useState("#000000");
 
   const putPenDown = (clientPosition: Position) => {
     setPenDown(true);
@@ -73,7 +75,7 @@ function EditMapPage() {
       return;
     }
     const [newX, newY] = scaleClientToCanvasPosition(clientPosition);
-    drawLine(ctx, x, y, newX, newY, "black", 1);
+    drawLine(ctx, x, y, newX, newY, penColor, penSize);
     setPenPosition([newX, newY]);
   };
 
@@ -92,9 +94,28 @@ function EditMapPage() {
     draw([e.touches[0].clientX, e.touches[0].clientY]);
   const onTouchEnd = () => liftPenUp();
 
+  const onChangePenSize = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    setPenSize(value);
+  };
+
+  const onChangePenColor = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = String(e.target.value);
+    setPenColor(value);
+  };
+
   return (
     <div className="flex flex-col">
-      <div className="bg-green">Name of Map</div>
+      <div className="bg-green">
+        <h4>Name of Map</h4>
+        <input
+          type="number"
+          min="1"
+          max="100"
+          value={penSize}
+          onChange={onChangePenSize}
+        />
+      </div>
       <div className="flex flex-row flex-1">
         <div className="bg-light-red w-20">100</div>
         <div className="flex flex-1 h-full">
@@ -119,7 +140,9 @@ function EditMapPage() {
             </TransformComponent>
           </TransformWrapper>
         </div>
-        <div className="bg-red w-60">sf</div>
+        <div className="bg-red w-60">
+          <input type="color" value={penColor} onChange={onChangePenColor} />
+        </div>
       </div>
     </div>
   );
