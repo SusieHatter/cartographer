@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { drawLine } from "../draw";
 import useCanvas from "../hooks/useCanvas";
@@ -24,18 +23,18 @@ const Canvas = ({ mapImage, pen, updatePen }: CanvasProps) => {
   const spaceDown = isDown(" ");
 
   const putPenDown = (clientPosition: Position) => {
-    updatePen({ down: true });
     const position = scaleClientToCanvasPosition(
       clientPosition,
       canvas.current
     );
-    updatePen({ position });
+    updatePen({ down: true, position });
   };
 
   const draw = (clientPosition: Position) => {
     if (!pen.down || spaceDown) {
       return;
     }
+
     const position = scaleClientToCanvasPosition(
       clientPosition,
       canvas.current
