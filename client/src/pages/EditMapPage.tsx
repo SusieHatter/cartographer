@@ -5,6 +5,7 @@ import useCanvas from "../hooks/useCanvas";
 import useSyncCanvas from "../hooks/useSyncCanvas";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import useMapImage from "../hooks/useMapImage";
+import useKeys from "../hooks/useKeys";
 
 type Position = [number, number];
 
@@ -38,28 +39,8 @@ function EditMapPage() {
     return [(x - bounds.x) * scale, (y - bounds.y) * scale];
   };
 
-  const [spaceDown, setSpaceDown] = useState(false);
-
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === " ") {
-      setSpaceDown(true);
-    }
-  };
-
-  const onKeyUp = (e: KeyboardEvent) => {
-    if (e.key === " ") {
-      setSpaceDown(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("keyup", onKeyUp);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("keyup", onKeyUp);
-    };
-  }, []);
+  const { isDown } = useKeys();
+  const spaceDown = isDown(" ");
 
   const [penDown, setPenDown] = useState(false);
   const [[x, y], setPenPosition] = useState([0, 0]);
