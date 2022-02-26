@@ -12,6 +12,11 @@ module.exports = {
       "light-red": "#fd5e61",
       red: "#f94144",
       "dark-red": "#bb3133",
+      "dark-grey": "#121212",
+      "medium-dark-grey": "#1A1A1A",
+      grey: "#282828",
+      "medium-light-grey": "#383838",
+      "light-grey": "#3C3C3C",
     },
     fontFamily: {
       sans: ["Marcellus SC"],

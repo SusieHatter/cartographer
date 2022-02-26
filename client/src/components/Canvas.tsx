@@ -59,12 +59,15 @@ const Canvas = ({ mapImage, pen, updatePen }: CanvasProps) => {
   const onTouchEnd = () => liftPenUp();
 
   return (
-    <TransformWrapper panning={{ disabled: !spaceDown }}>
+    <TransformWrapper
+      panning={{ disabled: !spaceDown }}
+      centerOnInit
+      minScale={0.9}
+      initialScale={0.9}
+    >
       <TransformComponent
         wrapperStyle={{
           height: "100%",
-          background: "brown",
-          alignItems: "center",
         }}
       >
         <canvas
