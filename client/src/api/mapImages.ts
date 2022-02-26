@@ -13,6 +13,9 @@ const verifyMapImage = (x: any): MapImage => {
   if (x["name"] === undefined) {
     throw Error("MapImage must have an name");
   }
+  if (x["lastEdited"] === undefined) {
+    throw Error("MapImage must have an lastEdited");
+  }
   return x;
 };
 
@@ -34,7 +37,7 @@ export const getMapImages = async (): Promise<MapImage[]> => {
     .then((x) => x.map(verifyMapImage));
 };
 
-export type UpdatedMapImage = Partial<Omit<MapImage, "id">>;
+export type UpdatedMapImage = Partial<Pick<MapImage, "dataUrl" | "name">>;
 
 export const updateMapImage = async (
   id: number,

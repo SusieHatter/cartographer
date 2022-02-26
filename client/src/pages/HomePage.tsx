@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createMapImage, deleteMapImage, getMapImages } from "../api/mapImages";
@@ -32,30 +33,33 @@ const HomePage = () => {
         <ConfirmButton onClick={onCreate}>Create</ConfirmButton>
       </div>
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {mapImages.map((mapImage) => (
-          <div
-            key={mapImage.id}
-            className="group bg-brown font-serif shadow-md rounded-t-lg p-2 relative"
-          >
-            <CancelButton
-              onClick={() => onDelete(mapImage.id)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute right-0 top-0"
+        {mapImages
+          .sort((a, b) => b.lastEdited - a.lastEdited)
+          .map((mapImage) => (
+            <div
+              key={mapImage.id}
+              className="group bg-brown font-serif shadow-md rounded-t-lg p-2 relative"
             >
-              ×
-            </CancelButton>
-            <Link to={`/maps/${mapImage.id}`}>
-              <img
-                src={mapImage.dataUrl}
-                alt=""
-                className="border bg-[white]"
-              />
-            </Link>
-            <h4 className="text-white font-sans text-lg">{mapImage.name}</h4>
-            <p className="text-beige font-serif text-xs">
-              Last edited: 10/Feb/2022
-            </p>
-          </div>
-        ))}
+              <CancelButton
+                onClick={() => onDelete(mapImage.id)}
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute right-0 top-0"
+              >
+                ×
+              </CancelButton>
+              <Link to={`/maps/${mapImage.id}`}>
+                <img
+                  src={mapImage.dataUrl}
+                  alt=""
+                  className="border bg-[white]"
+                />
+              </Link>
+              <h4 className="text-white font-sans text-lg">{mapImage.name}</h4>
+              <p className="text-beige font-serif text-xs">
+                Last edited:{" "}
+                {format(new Date(mapImage.lastEdited), "dd/MMM/yyyy HH:mm:ss")}
+              </p>
+            </div>
+          ))}
       </div>
     </div>
   );
