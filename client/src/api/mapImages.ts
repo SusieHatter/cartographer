@@ -34,9 +34,11 @@ export const getMapImages = async (): Promise<MapImage[]> => {
     .then((x) => x.map(verifyMapImage));
 };
 
+export type UpdatedMapImage = Partial<Omit<MapImage, "id">>;
+
 export const updateMapImage = async (
   id: number,
-  updatedMapImage: Partial<Omit<MapImage, "id">>
+  updatedMapImage: UpdatedMapImage
 ): Promise<MapImage> => {
   return fetch(`${MAPS_URL}/${id}`, {
     method: "put",

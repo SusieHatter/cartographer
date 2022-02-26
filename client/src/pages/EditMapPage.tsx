@@ -26,7 +26,7 @@ function EditMapPage() {
   }, [id, navigate]);
 
   const { ctx, ref } = useCanvas(WIDTH, HEIGHT);
-  const mapImage = useMapImage(id);
+  const [mapImage, updateMapImage] = useMapImage(id);
   useSyncCanvas(ctx, mapImage, 5000);
 
   const scaleClientToCanvasPosition = ([x, y]: Position): Position => {
@@ -66,6 +66,15 @@ function EditMapPage() {
   const [penSize, setPenSize] = useState(1);
   const [penColor, setPenColor] = useState("#000000");
 
+  const [editingMapName, setEditingMapName] = useState(false);
+  const [newMapName, setNewMapName] = useState("");
+
+  useEffect(() => {
+    if (mapImage) {
+      setNewMapName(mapImage.name);
+    }
+  }, [mapImage]);
+
   const putPenDown = (clientPosition: Position) => {
     setPenDown(true);
     const position = scaleClientToCanvasPosition(clientPosition);
@@ -102,8 +111,22 @@ function EditMapPage() {
   };
 
   const onChangePenColor = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = String(e.target.value);
-    setPenColor(value);
+    setPenColor(e.target.value);
+  };
+
+  const onClickMapName = () => {
+    setEditingMapName(true);
+  };
+
+  const onChangeMapName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMapName(e.target.value);
+  };
+
+  const onKeyDownMapName = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setEditingMapName(false);
+      updateMapImage({ name: newMapName });
+    }
   };
 
   if (!mapImage) {
@@ -113,7 +136,18 @@ function EditMapPage() {
   return (
     <div className="flex flex-col">
       <div className="bg-green">
-        <h4>{mapImage.name}</h4>
+        {editingMapName ? (
+          <input
+            type="text"
+            value={newMapName}
+            onChange={onChangeMapName}
+            onKeyDown={onKeyDownMapName}
+          />
+        ) : (
+          <h4 onClick={onClickMapName} className="cursor-pointer inline-block">
+            {mapImage.name}
+          </h4>
+        )}
         <input
           type="number"
           min="1"
