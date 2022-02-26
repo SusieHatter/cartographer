@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { MutableRefObject, useEffect } from "react";
 import { updateMapImage } from "../api/mapImages";
 import { MapImage } from "../models";
 
@@ -28,21 +28,21 @@ const updateDataUrl = async (
 type Milliseconds = number;
 
 const useSyncCanvas = (
-  ctx: CanvasRenderingContext2D | undefined | null,
+  ctx: MutableRefObject<CanvasRenderingContext2D>,
   mapImage: MapImage | undefined,
   postInterval: Milliseconds
 ) => {
   useEffect(() => {
-    if (!ctx || !mapImage) {
+    if (!mapImage) {
       return;
     }
     let timer: NodeJS.Timer;
     (async () => {
       const dataUrl =
-        mapImage.dataUrl || (await updateDataUrl(ctx, mapImage.id));
-      await loadCanvas(ctx, dataUrl);
+        mapImage.dataUrl || (await updateDataUrl(ctx.current, mapImage.id));
+      await loadCanvas(ctx.current, dataUrl);
       timer = setInterval(() => {
-        updateDataUrl(ctx, mapImage.id);
+        updateDataUrl(ctx.current, mapImage.id);
       }, postInterval);
     })();
     return () => {

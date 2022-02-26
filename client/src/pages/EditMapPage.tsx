@@ -1,43 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
 import { drawLine } from "../draw";
 import useCanvas from "../hooks/useCanvas";
 import useSyncCanvas from "../hooks/useSyncCanvas";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import useMapImage from "../hooks/useMapImage";
 import useKeys from "../hooks/useKeys";
-
-type Position = [number, number];
+import { Position } from "../models";
+import { scaleClientToCanvasPosition } from "../utils";
 
 const WIDTH = 3000;
 const HEIGHT = 1500;
 
-function EditMapPage() {
-  const { id: idStr } = useParams();
-  const navigate = useNavigate();
+type EditPageProps = {
+  id: number;
+};
 
-  if (!idStr) {
-    throw Error("EditMapPage requires an id in the url params");
-  }
-  const id = parseInt(idStr);
-  useEffect(() => {
-    if (Number.isNaN(id)) {
-      navigate("/", { replace: true });
-    }
-  }, [id, navigate]);
-
-  const { ctx, ref } = useCanvas(WIDTH, HEIGHT);
+function EditMapPage({ id }: EditPageProps) {
+  const { canvas, ctx, ref } = useCanvas(WIDTH, HEIGHT);
   const [mapImage, updateMapImage] = useMapImage(id);
   useSyncCanvas(ctx, mapImage, 5000);
-
-  const scaleClientToCanvasPosition = ([x, y]: Position): Position => {
-    if (!ctx) {
-      return [0, 0];
-    }
-    const bounds = ctx.canvas.getBoundingClientRect();
-    const scale = WIDTH / bounds.width;
-    return [(x - bounds.x) * scale, (y - bounds.y) * scale];
-  };
 
   const { isDown } = useKeys();
   const spaceDown = isDown(" ");
@@ -48,26 +29,26 @@ function EditMapPage() {
   const [penColor, setPenColor] = useState("#000000");
 
   const [editingMapName, setEditingMapName] = useState(false);
-  const [newMapName, setNewMapName] = useState("");
-
-  useEffect(() => {
-    if (mapImage) {
-      setNewMapName(mapImage.name);
-    }
-  }, [mapImage]);
+  const [newMapName, setNewMapName] = useState<string | undefined>(undefined);
 
   const putPenDown = (clientPosition: Position) => {
     setPenDown(true);
-    const position = scaleClientToCanvasPosition(clientPosition);
+    const position = scaleClientToCanvasPosition(
+      clientPosition,
+      canvas.current
+    );
     setPenPosition(position);
   };
 
   const draw = (clientPosition: Position) => {
-    if (!penDown || !ctx || spaceDown) {
+    if (!penDown || spaceDown) {
       return;
     }
-    const [newX, newY] = scaleClientToCanvasPosition(clientPosition);
-    drawLine(ctx, x, y, newX, newY, penColor, penSize);
+    const [newX, newY] = scaleClientToCanvasPosition(
+      clientPosition,
+      canvas.current
+    );
+    drawLine(ctx.current, x, y, newX, newY, penColor, penSize);
     setPenPosition([newX, newY]);
   };
 
@@ -120,7 +101,7 @@ function EditMapPage() {
         {editingMapName ? (
           <input
             type="text"
-            value={newMapName}
+            value={newMapName ?? mapImage.name}
             onChange={onChangeMapName}
             onKeyDown={onKeyDownMapName}
           />
