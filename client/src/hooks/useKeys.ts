@@ -4,7 +4,7 @@ const useKeys = () => {
   const [keys, setKeys] = useState<Record<string, true>>({});
 
   const onKeyDown = (e: KeyboardEvent) => {
-    setKeys({ ...keys, [e.key]: true });
+    setKeys((keys) => ({ ...keys, [e.key]: true }));
   };
 
   const onKeyUp = (e: KeyboardEvent) => {
@@ -23,7 +23,7 @@ const useKeys = () => {
     };
   }, []);
 
-  const isDown = (key: string) => keys[key];
+  const isDown = (key: string) => Boolean(keys[key]);
   const isUp = (key: string) => !keys[key];
 
   return { keys, isDown, isUp };
